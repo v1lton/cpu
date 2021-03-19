@@ -11,6 +11,10 @@ module cpu(
     wire RegWrite;
     wire ABWrite;
     wire [1:0] ALU_Control
+    wire ALUOutControl;
+    wire MDRWrite;
+    wire HIWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
+    wire LOWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
 
 // ULA flags
 
@@ -42,6 +46,12 @@ module cpu(
     wire [31:0] ALUSrcA_out;
     wire [31:0] ALUSrcB_out;
     wire [31:0] ALU_out;
+    wire [31:0] ALUOut_out;
+    wire [31:0] EPC_out;
+    wire [31:0] MDR_out;
+    wire [31:0] Mult_Div_out;
+    wire [31:0] HI_out;
+    wire [31:0] LO_out;
     
     Registrador PC_(
         clock,
@@ -57,6 +67,30 @@ module cpu(
         MemWrite, // chart notation
         SS_out,
         Memory_out
+    );
+
+    Registrador MDR_(
+        clock,
+        reset,
+        MDRWrite,
+        Memory_out,
+        MDR_out
+    );
+
+    Registrador HI_(
+        clock,
+        reset,
+        HIWrite, // chart notation
+        Mult_Div_out,
+        HI_out
+    );
+
+    Registrador LO_(
+        clock,
+        reset,
+        LOWrite, // chart notation
+        Mult_Div_out,
+        LO_out
     );
 
     Instr_Reg IR_(
@@ -82,7 +116,7 @@ module cpu(
         Reg_B_out
     );
 
-    Memoria A_(
+    Registrador A_(
         clock,
         reset,
         ABWrite, 
@@ -90,7 +124,7 @@ module cpu(
         A_out
     );
 
-    Memoria B_(
+    Registrador B_(
         clock,
         reset,
         ABWrite, 
@@ -102,7 +136,7 @@ module cpu(
         ALUSrcA_out,
         ALUSrcB_out,
         ALU_Control,
-        ALU_out,
+        ALU_out, // No chart está como Result
         Overflow, // Sinaliza overflow aritmetico
         NG, // Sinaliza valor negativo
         ZR, // Sinaliza quando for zero 
@@ -110,5 +144,23 @@ module cpu(
         GT, // Sinaliza de A > B
         LT  // Sinaliza se A < B
     );
+
+    Registrador ALUOut_(
+        clock,
+        reset,
+        ALUOutControl, // chart notation
+        ALU_out,
+        ALUOut_out
+    );
+
+    Registrador EPC_(
+        clock,
+        reset,
+        EPCWrite, // chart notation
+        ALU_out,
+        EPC_out
+    );
+
+
 
 endmodule
