@@ -9,24 +9,39 @@ module cpu(
     wire MemWrite;
     wire IRWrite;
     wire RegWrite;
-    wire AWrite;
-    wire BWrite;
+    wire ABWrite;
+    wire [1:0] ALU_Control
 
-// Data wires
+// ULA flags
 
-    wire [31:0] ULA_out;
-    wire [31:0] PC_out;
-    wire [31:0] IorD_out;
-    wire [31:0] SS_out;
-    wire [31:0] Memory_out;
+    wire overflow;
+    wire NG;
+    wire ZR;
+    wire EQ;
+    wire GT;
+    wire LT;
+
+// Instructions subsets
+
     wire [5:0]  OPCODE;
     wire [4:0]  RS;
     wire [4:0]  RT;
     wire [15:0] IMMEDIATE;
+
+// Data wires 32 bits
+
+    wire [31:0] PCSource_out;
+    wire [31:0] PC_out;
+    wire [31:0] IorD_out;
+    wire [31:0] SS_out;
+    wire [31:0] Memory_out;
     wire [31:0] RegDst_out;
     wire [31:0] DataSrc_out;
     wire [31:0] Reg_A_out;
     wire [31:0] Reg_B_out;
+    wire [31:0] ALUSrcA_out;
+    wire [31:0] ALUSrcB_out;
+    wire [31:0] ALU_out;
     
     Registrador PC_(
         clock,
@@ -70,7 +85,7 @@ module cpu(
     Memoria A_(
         clock,
         reset,
-        AWrite, 
+        ABWrite, 
         Reg_A_out,
         A_out
     );
@@ -78,9 +93,22 @@ module cpu(
     Memoria B_(
         clock,
         reset,
-        BWrite, 
+        ABWrite, 
         Reg_B_out,
         B_out
+    );
+
+    ula32 ALU_(
+        ALUSrcA_out,
+        ALUSrcB_out,
+        ALU_Control,
+        ALU_out,
+        Overflow, // Sinaliza overflow aritmetico
+        NG, // Sinaliza valor negativo
+        ZR, // Sinaliza quando for zero 
+        EQ, // Sinaliza se A == B
+        GT, // Sinaliza de A > B
+        LT  // Sinaliza se A < B
     );
 
 endmodule
