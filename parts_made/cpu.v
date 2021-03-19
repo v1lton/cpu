@@ -7,6 +7,7 @@ module cpu(
     wire PCWrite;
     wire MemWrite;
     wire IRWrite;
+    wire RegWrite;
 
 // Data wires
 
@@ -19,11 +20,15 @@ module cpu(
     wire [4:0]  RS;
     wire [4:0]  RT;
     wire [15:0] IMMEDIATE;
+    wire [31:0] RegDst_out;
+    wire [31:0] DataSrc_out;
+    wire [31:0] Reg_A_out;
+    wire [31:0] Reg_B_out;
     
     Registrador PC_(
         clock,
         reset,
-        PCWrite, // chaRT notation
+        PCWrite, // chart notation
         PCSource_out,
         PC_out
     );
@@ -31,7 +36,7 @@ module cpu(
     Memoria Memory_(
         IorD_out,
         clock,
-        MemWrite, // chaRT notation
+        MemWrite, // chart notation
         SS_out,
         Memory_out
     );
@@ -39,12 +44,24 @@ module cpu(
     Instr_Reg IR_(
         clock,
         reset,
-        IRWrite, // chaRT notation        
+        IRWrite, // chart notation        
         Memory_out,
         OPCODE,
         RS,
         RT,
         IMMEDIATE
+    );
+
+    Banco_reg Reg_Base_(
+        clock,
+        reset,
+        RegWrite, // chart notation
+        RS,
+        RT,
+        RegDst_out,
+        DataSrc_out,
+        Reg_A_out,
+        Reg_B_out
     );
 
 endmodule
