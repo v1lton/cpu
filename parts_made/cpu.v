@@ -4,10 +4,13 @@ module cpu(
 );
 
 // Control wires
+
     wire PCWrite;
     wire MemWrite;
     wire IRWrite;
     wire RegWrite;
+    wire AWrite;
+    wire BWrite;
 
 // Data wires
 
@@ -62,6 +65,22 @@ module cpu(
         DataSrc_out,
         Reg_A_out,
         Reg_B_out
+    );
+
+    Memoria A_(
+        clock,
+        reset,
+        AWrite, 
+        Reg_A_out,
+        A_out
+    );
+
+    Memoria B_(
+        clock,
+        reset,
+        BWrite, 
+        Reg_B_out,
+        B_out
     );
 
 endmodule
