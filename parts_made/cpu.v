@@ -16,6 +16,7 @@ module cpu(
     wire HIWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
     wire LOWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
     wire [1:0] SSControl;
+    wire [2:0] ShiftControl;
 
 // ULA flags
 
@@ -34,8 +35,8 @@ module cpu(
     wire [15:0] IMMEDIATE;
 
 // Data wires less 32 bits
-    wire [25:0] Concatenated_26;
-    wire [27:0] Shift_let_26_out;
+    wire [25:0] Concatenated_26to28_out;
+    wire [27:0] Shift_left_26_out;
 
 // Data wires 32 bits
 
@@ -58,10 +59,15 @@ module cpu(
     wire [31:0] HI_out;
     wire [31:0] LO_out;
     wire [31:0] SS_out;
-    wire [31:0] Concatenated_32;
-    wire [31:0] Sign_extend_1to32_out
-    wire [31:0] Sign_extend_8to32_out
-    wire [31:0] Sign_extend_16to32_out
+    wire [31:0] Concatenated_28to32_out;
+    wire [31:0] Sign_extend_1to32_out;
+    wire [31:0] Sign_extend_8to32_out;
+    wire [31:0] Sign_extend_16to32_out;
+    wire [31:0] Shift_left_16_out;
+    wire [31:0] Shift_left_mult_4_out;  
+    wire [31:0] Shift_src_out;
+    wire [31:0] Shift_amt_out;
+    wire [31:0] Shift_reg_out;
 
 // Memory
 
@@ -98,17 +104,17 @@ module cpu(
 
 // Concatenations
 
-    concatenate_26 Concatenate_26_(
+    concatenate_26to28 Concatenate_26to28_(
         RS,
         RT,
         IMMEDIATE,
-        Concatenated_26
+        Concatenated_26to28_out
     );
 
-    concatenate_28 Concatenate_28_(
+    concatenate_28to32 Concatenate_28to32_(
         PC_out,
-        Shift_let_26_out,
-        Concatenated_32
+        Shift_left_26_out,
+        Concatenated_28to32_out
     );
 
 // Sign Extend
@@ -126,6 +132,30 @@ module cpu(
     sign_extend_16 Sign_extend_16_(
         IMMEDIATE,
         Sign_extend_16to32_out
+    );
+
+// Shifts
+
+    shift_left_16 Shift_left_16_(
+        IMMEDIATE,
+        Shift_left_16_out
+    );
+
+    shift_left_26 Shift_left_26_(
+        Concatenated_26to28_out,
+        Shift_left_26_out
+    );
+
+    shift_left_mult_4 Shift_left_mult_4_(
+        PC_out,
+        Shift_left_mult_4_out
+    );
+
+    shift_reg Shift_reg_(
+        ShiftControl, // chart notation
+        Shift_src_out,
+        Shift_amt_out,
+        Shift_reg_out
     );
 
 // Registers
