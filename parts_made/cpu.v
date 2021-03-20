@@ -15,6 +15,7 @@ module cpu(
     wire MDRWrite;
     wire HIWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
     wire LOWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
+    wire [1:0] SSControl;
 
 // ULA flags
 
@@ -52,6 +53,7 @@ module cpu(
     wire [31:0] Mult_Div_out;
     wire [31:0] HI_out;
     wire [31:0] LO_out;
+    wire [31:0] SS_out;
     
     Registrador PC_(
         clock,
@@ -67,6 +69,13 @@ module cpu(
         MemWrite, // chart notation
         SS_out,
         Memory_out
+    );
+
+    ss_control SS_(
+        SSControl, // chart notation
+        MDR_out,
+        B_out,
+        SS_out
     );
 
     Registrador MDR_(
