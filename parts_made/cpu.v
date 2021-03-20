@@ -33,6 +33,10 @@ module cpu(
     wire [4:0]  RT;
     wire [15:0] IMMEDIATE;
 
+// Data wires less 32 bits
+    wire [25:0] Concatenated_26;
+    wire [27:0] Shift_let_26_out;
+    
 // Data wires 32 bits
 
     wire [31:0] PCSource_out;
@@ -54,14 +58,9 @@ module cpu(
     wire [31:0] HI_out;
     wire [31:0] LO_out;
     wire [31:0] SS_out;
-    
-    Registrador PC_(
-        clock,
-        reset,
-        PCWrite, // chart notation
-        PCSource_out,
-        PC_out
-    );
+    wire [31:0] Concatenated_32;
+
+// Memory
 
     Memoria Memory_(
         IorD_out,
@@ -71,11 +70,75 @@ module cpu(
         Memory_out
     );
 
+// Controls
     ss_control SS_(
         SSControl, // chart notation
         MDR_out,
         B_out,
         SS_out
+    );
+
+// ALU
+
+    ula32 ALU_(
+        ALUSrcA_out,
+        ALUSrcB_out,
+        ALU_Control,
+        ALU_out, // No chart está como Result
+        Overflow, // Sinaliza overflow aritmetico
+        NG, // Sinaliza valor negativo
+        ZR, // Sinaliza quando for zero 
+        EQ, // Sinaliza se A == B
+        GT, // Sinaliza de A > B
+        LT  // Sinaliza se A < B
+    );
+
+// Concatenation
+
+    concatenate_26 Concatenate_26_(
+        RS,
+        RT,
+        IMMEDIATE,
+        Concatenated_26
+    );
+
+    concatenate_28 Concatenate_28_(
+        PC_out,
+        Shift_let_26_out,
+        Concatenated_32,
+    );
+
+// Registers
+
+    Banco_reg Reg_Base_(
+        clock,
+        reset,
+        RegWrite, // chart notation
+        RS,
+        RT,
+        RegDst_out,
+        DataSrc_out,
+        Reg_A_out,
+        Reg_B_out
+    );
+
+    Instr_Reg IR_(
+        clock,
+        reset,
+        IRWrite, // chart notation        
+        Memory_out,
+        OPCODE,
+        RS,
+        RT,
+        IMMEDIATE
+    );
+    
+    Registrador PC_(
+        clock,
+        reset,
+        PCWrite, // chart notation
+        PCSource_out,
+        PC_out
     );
 
     Registrador MDR_(
@@ -102,29 +165,6 @@ module cpu(
         LO_out
     );
 
-    Instr_Reg IR_(
-        clock,
-        reset,
-        IRWrite, // chart notation        
-        Memory_out,
-        OPCODE,
-        RS,
-        RT,
-        IMMEDIATE
-    );
-
-    Banco_reg Reg_Base_(
-        clock,
-        reset,
-        RegWrite, // chart notation
-        RS,
-        RT,
-        RegDst_out,
-        DataSrc_out,
-        Reg_A_out,
-        Reg_B_out
-    );
-
     Registrador A_(
         clock,
         reset,
@@ -139,19 +179,6 @@ module cpu(
         ABWrite, 
         Reg_B_out,
         B_out
-    );
-
-    ula32 ALU_(
-        ALUSrcA_out,
-        ALUSrcB_out,
-        ALU_Control,
-        ALU_out, // No chart está como Result
-        Overflow, // Sinaliza overflow aritmetico
-        NG, // Sinaliza valor negativo
-        ZR, // Sinaliza quando for zero 
-        EQ, // Sinaliza se A == B
-        GT, // Sinaliza de A > B
-        LT  // Sinaliza se A < B
     );
 
     Registrador ALUOut_(
@@ -169,7 +196,5 @@ module cpu(
         ALU_out,
         EPC_out
     );
-
-
 
 endmodule
