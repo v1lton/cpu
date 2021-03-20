@@ -36,7 +36,7 @@ module cpu(
 // Data wires less 32 bits
     wire [25:0] Concatenated_26;
     wire [27:0] Shift_let_26_out;
-    
+
 // Data wires 32 bits
 
     wire [31:0] PCSource_out;
@@ -59,6 +59,9 @@ module cpu(
     wire [31:0] LO_out;
     wire [31:0] SS_out;
     wire [31:0] Concatenated_32;
+    wire [31:0] Sign_extend_1to32_out
+    wire [31:0] Sign_extend_8to32_out
+    wire [31:0] Sign_extend_16to32_out
 
 // Memory
 
@@ -93,7 +96,7 @@ module cpu(
         LT  // Sinaliza se A < B
     );
 
-// Concatenation
+// Concatenations
 
     concatenate_26 Concatenate_26_(
         RS,
@@ -105,7 +108,24 @@ module cpu(
     concatenate_28 Concatenate_28_(
         PC_out,
         Shift_let_26_out,
-        Concatenated_32,
+        Concatenated_32
+    );
+
+// Sign Extend
+
+    sign_extend_1 Sign_extend_1_(
+        LT,
+        Sign_extend_1to32_out
+    );
+
+    sign_extend_8 Sign_extend_8_(
+        Memory_out,
+        Sign_extend_8to32_out
+    );
+
+    sign_extend_16 Sign_extend_16_(
+        IMMEDIATE,
+        Sign_extend_16to32_out
     );
 
 // Registers
