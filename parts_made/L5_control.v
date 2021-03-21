@@ -1,11 +1,11 @@
 module L5_control (
 input wire[31:0] MDR_out,
-input wire[1:0] LSControl,
-output reg[31:0] LSControl_out
+input wire[1:0] L5Control,
+output reg[31:0] L5Control_out
 );
 parameter S1 = 1, S2 = 2, S3 = 3;
 always @(*) begin
-	case(LSControl)
+	case(L5Control)
 		S1:
 			LSControlOut <= MDR_out;//Load Word
 		S2:
