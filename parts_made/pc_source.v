@@ -1,28 +1,28 @@
 module pc_source (
 input wire[31:0] MDR_Out,
-input wire[31:0] AluResult,
-input wire[31:0] JumpAddress, // valido mudar o nome depois
-input wire[31:0] RegAluOutOut,
-input wire[31:0] RegEPCOut,
-input wire[31:0] ExceptionBit, // valido mudar o nome depois
+input wire[31:0] ALU_out,
+input wire[31:0] Concatenated_28to32_out, 
+input wire[31:0] ALUOut_out,
+input wire[31:0] EPC_out,
+input wire[31:0] Excp_out, 
 input wire[2:0] PCSource,
-output reg[31:0] MuxPCSourceOut
+output reg[31:0] PCSource_out
 );
 parameter S0 = 0, S1 = 1, S2 = 2, S3 = 3, S4 = 4, S5 = 5;
 always @(*) begin
 	case(PCSource)
 		S0:
-			MuxPCSourceOut <= AluResult;
+			PCSource_out <= ALU_out;
 		S1:
-			MuxPCSourceOut <= RegAluOutOut;
+			PCSource_out <= ALUOut_out;
 		S2:
-			MuxPCSourceOut <= JumpAddress;
+			PCSource_out <= Concatenated_28to32_out;
 		S3:
-			MuxPCSourceOut <= MDR_Out;
+			PCSource_out <= MDR_Out;
 		S4:
-			MuxPCSourceOut <= RegEPCOut;
+			PCSource_out <= EPC_out;
 		S5:
-			MuxPCSourceOut <= ExceptionBit;
+			PCSource_out <= Excp_out;
 	endcase
 end
 

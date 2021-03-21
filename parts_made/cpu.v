@@ -15,8 +15,15 @@ module cpu(
     wire MDRWrite;
     wire HIWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
     wire LOWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
+    wire ALUSrcA;
+    wire ALUSrcB;
+    wire [2:0] RegDst;
     wire [1:0] SSControl;
     wire [2:0] ShiftControl;
+    wire [2:0] IorD;
+    wire [2:0] PCSource
+    wire [1:0] ExcpCtrl;
+    wire ShiftAmt;
 
 // ULA flags
 
@@ -42,7 +49,7 @@ module cpu(
 
     wire [31:0] PCSource_out;
     wire [31:0] PC_out;
-    wire [31:0] IorD_out;
+    wire [31:0] I_or_D_Out;
     wire [31:0] SS_out;
     wire [31:0] Memory_out;
     wire [31:0] RegDst_out;
@@ -68,11 +75,13 @@ module cpu(
     wire [31:0] Shift_src_out;
     wire [31:0] Shift_amt_out;
     wire [31:0] Shift_reg_out;
+    wire [31:0] L5Control_out;
+    wire [31:0] Excp_out;
 
 // Memory
 
     Memoria Memory_(
-        IorD_out,
+        I_or_D_Out,
         clock,
         MemWrite, // chart notation
         SS_out,
@@ -246,5 +255,85 @@ module cpu(
         ALU_out,
         EPC_out
     );
+
+    //Muxes
+
+    alu_src_a Alu_Src_A(
+        ALUSrcA,
+        PC_Out,
+        Reg_A_out,
+        MDR_out,
+        ALUSrcA_out
+    );
+
+    alu_src_b Alu_Src_B(
+        ALUSrcB,
+        B_out,
+        Shift_left_16_out,
+        Shift_left_mult_4_out,
+        ALUSrcB_out
+    );
+
+    data_source DataSrc( //Tem que mudar alguma coisa
+        ALU_out, 
+        L5Control_out,
+        HI_out,
+        LO_out,
+        Sign_extend_1to32_out, 
+        Sign_extend_16to32_out,
+        Shif_left_16_out, 
+        Shift_reg_out, 
+        ALUSrcA_out,
+        ALUSrcB_out,
+        DataSrc_out
+    );
+
+    I_or_D I_or_D(
+        PC_out,
+        ALU_out,
+        ALUOut_out,
+        Excp_out,
+        Reg_A_out,
+        IorD,
+        I_or_D_Out
+    );
+
+    ExceptionsCtrl ExceptionsCtrl(
+        ExcpCtrl,
+        Excp_out
+    );
+
+    shift_amt shift_amt(
+        Reg_B_out,
+        IMMEDIATE,
+        ShiftAmt,
+        shift_amt_out
+    );
+
+    pc_source PCSource(
+        MDR_Out,
+        ALU_out,
+        Concatenated_28to32_out, 
+        ALUOut_out,
+        EPC_out,
+        Excp_out,
+        PCSource,
+        PCSource_out
+    );
+
+    shift_src shift_src(
+        ALUSrcA_out,
+        ALUSrcB_out,
+        ShiftSrc
+    );
+
+    reg_dst Reg_Dst(
+        RS,
+        RT,
+        IMMEDIATE, 
+        RegDst,
+        RegDst_out
+    );
+    
 
 endmodule
