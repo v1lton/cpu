@@ -1,15 +1,16 @@
 module data_source (
-input wire[31:0] ALU_out, 
-input wire[31:0] L5Control_out,
-input wire[31:0] HI_out,
-input wire[31:0] LO_out,
-input wire[31:0] Sign_extend_1to32_out, //sign extend 1-32 (mudei nome aqui)
-input wire[31:0] Sign_extend_16to32_out,//sign extend 16-32 (o nome tava igual ao sign extend 1, ent mudei)
-input wire[31:0] Shif_left_16_out, 
-input wire[31:0] Shift_reg_out, //ainda nao foi feito
-input wire[31:0] ALUSrcA_out,
-input wire[3:0] ALUSrcB_out,
-output reg[31:0] DataSrc_out
+	input wire [3:0]DataSrc,
+	input wire [31:0] ALU_out, 
+	input wire [31:0] L5Control_out,
+	input wire [31:0] HI_out,
+	input wire [31:0] LO_out,
+	input wire [31:0] Sign_extend_1to32_out,
+	input wire [31:0] Sign_extend_16to32_out,
+	input wire [31:0] Shif_left_16_out, 
+	input wire [31:0] Shift_reg_out, 
+	input wire [31:0] ALUSrcA_out,
+	input wire [31:0] ALUSrcB_out,
+	output reg [31:0] DataSrc_out
 );
 parameter S0 = 0, S1 = 1, S2 = 2, S3 = 3, S4 = 4, S5 = 5, S6 = 6, S7 = 7, S8 = 8, S9 = 9, S10 = 10;
 always @(*) begin
