@@ -10,7 +10,7 @@ module cpu(
     wire IRWrite;
     wire RegWrite;
     wire ABWrite;
-    wire [1:0] ALU_Control
+    wire [2:0] ALU_Control
     wire ALUOutControl;
     wire MDRWrite;
     wire HIWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
@@ -24,22 +24,26 @@ module cpu(
     wire [2:0] PCSource
     wire [1:0] ExcpCtrl;
     wire ShiftAmt;
+    wire L5Control;
+    wire EPCWrite;
+    wire [3:0] DataSrc;
+    wire ShiftSrc;
 
 // ULA flags
 
-    wire overflow;
+    wire overflow; // controller /////////////////////////////////////////////
     wire NG;
     wire ZR;
-    wire EQ;
-    wire GT;
-    wire LT;
+    wire EQ; // controler /////////////////////////////////////////////
+    wire GT; // controler /////////////////////////////////////////////
+    wire LT; // controler /////////////////////////////////////////////
 
 // Instructions subsets
 
-    wire [5:0]  OPCODE;
+    wire [5:0]  OPCODE; // controler /////////////////////////////////////////////
     wire [4:0]  RS;
     wire [4:0]  RT;
-    wire [15:0] IMMEDIATE;
+    wire [15:0] IMMEDIATE; // controler /////////////////////////////////////////////
 
 // Data wires less 32 bits
     wire [25:0] Concatenated_26to28_out;
@@ -94,6 +98,12 @@ module cpu(
         MDR_out,
         B_out,
         SS_out
+    );
+
+    L5_control L5_control(
+        MDR_out,
+        L5Control,
+        L5Control_out
     );
 
 // ALU
@@ -274,7 +284,8 @@ module cpu(
         ALUSrcB_out
     );
 
-    data_source DataSrc( //Tem que mudar alguma coisa
+    data_source DataSource( //Tem que mudar alguma coisa
+        DataSrc,
         ALU_out, 
         L5Control_out,
         HI_out,
