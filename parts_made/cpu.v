@@ -15,8 +15,8 @@ module cpu(
     wire MDRWrite;
     wire HIWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
     wire LOWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
-    wire ALUSrcA;
-    wire ALUSrcB;
+    wire [1:0] ALUSrcA;
+    wire [1:0] ALUSrcB;
     wire [2:0] RegDst;
     wire [1:0] SSControl;
     wire [2:0] ShiftControl;
@@ -28,6 +28,7 @@ module cpu(
     wire EPCWrite;
     wire [3:0] DataSrc;
     wire ShiftSrc;
+    wire HDControl;
 
 // ULA flags
 
@@ -48,6 +49,7 @@ module cpu(
 // Data wires less 32 bits
     wire [25:0] Concatenated_26to28_out;
     wire [27:0] Shift_left_26_out;
+    wire [4:0] Shift_amt_out;
 
 // Data wires 32 bits
 
@@ -66,7 +68,8 @@ module cpu(
     wire [31:0] ALUOut_out;
     wire [31:0] EPC_out;
     wire [31:0] MDR_out;
-    wire [31:0] Mult_Div_out;
+    wire [31:0] Mult_Div_HI_out;
+    wire [31:0] Mult_Div_LO_out;
     wire [31:0] HI_out;
     wire [31:0] LO_out;
     wire [31:0] SS_out;
@@ -77,10 +80,14 @@ module cpu(
     wire [31:0] Shift_left_16_out;
     wire [31:0] Shift_left_mult_4_out;  
     wire [31:0] Shift_src_out;
-    wire [31:0] Shift_amt_out;
     wire [31:0] Shift_reg_out;
     wire [31:0] L5Control_out;
     wire [31:0] Excp_out;
+
+    // MULT_DIV flags
+
+    wire DivBy0; // controller /////////////////////////////////////////////
+    wire Done;
 
 // Memory
 
@@ -93,6 +100,7 @@ module cpu(
     );
 
 // Controls
+
     ss_control SS_(
         SSControl, // chart notation
         MDR_out,
@@ -170,10 +178,12 @@ module cpu(
         Shift_left_mult_4_out
     );
 
-    shift_reg Shift_reg_(
+    RegDesloc Shift_reg_(
+        clock,
+        reset,
         ShiftControl, // chart notation
-        Shift_src_out,
         Shift_amt_out,
+        Shift_src_out,
         Shift_reg_out
     );
 
@@ -222,7 +232,7 @@ module cpu(
         clock,
         reset,
         HIWrite, // chart notation
-        Mult_Div_out,
+        Mult_Div_HI_out,
         HI_out
     );
 
@@ -230,7 +240,7 @@ module cpu(
         clock,
         reset,
         LOWrite, // chart notation
-        Mult_Div_out,
+        Mult_Div_LO_out,
         LO_out
     );
 
@@ -318,7 +328,7 @@ module cpu(
         Reg_B_out,
         IMMEDIATE,
         ShiftAmt,
-        shift_amt_out
+        Shift_amt_out
     );
 
     pc_source PCSource(
@@ -345,6 +355,17 @@ module cpu(
         RegDst,
         RegDst_out
     );
-    
 
+    mult_div mult_div(
+        HDControl,
+        Reg_A_out,
+        Reg_B_out,
+        clock,
+        reset,
+        Mult_Div_HI_out,
+        Mult_Div_LO_out,
+        DivBy0,
+        Done,
+    );
+    
 endmodule
