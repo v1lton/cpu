@@ -49,9 +49,9 @@ module Control(
   parameter MULT_1 = 7'b0001010; // 10
   parameter MULT_WAIT = 7'b0001011; // 11
   parameter MULT_2 = 7'b0001100; // 12
-  parameter DIV1 = 7'b0001101; // 13
+  parameter DIV_1 = 7'b0001101; // 13
   parameter DIV_WAIT = 7'b0001110; // 14
-  parameter DIV2 = 7'b0001111; // 15
+  parameter DIV_2 = 7'b0001111; // 15
   parameter MFHI = 7'b0010000; // 16
   parameter MFLO = 7'b0010001; // 17
   parameter SHIFT_SHAMT = 7'b0010010; // 18
@@ -191,13 +191,13 @@ reg[6:0] state;
     end else begin
       case (state)
         FETCH_1: begin
-        //Alteradas
-		 ALUSrcB = 2'b01;
-		 ALU_Control = 3'b001;
-		//Inalteradas
+          //Alteradas
+		      ALUSrcB = 2'b01;
+		      ALU_Control = 3'b001;
+		      //Inalteradas
           RegDst = 3'b000;
-		  DataSrc = 4'b0000;
-		  RegWrite = 1'b0;                
+		      DataSrc = 4'b0000;
+		      RegWrite = 1'b0;                
           PCWrite = 1'b0;
           MemWrite = 1'b0;
           IRWrite = 1'b0;
@@ -220,14 +220,14 @@ reg[6:0] state;
 			    state = FETCH_2;
         end
         FETCH_2: begin
-           //Alteradas
-           PCWrite = 1'b1;
-           //Inalteradas
+          //Alteradas
+          PCWrite = 1'b1;
+          //Inalteradas
           ALUSrcB = 2'b01;
-		  ALU_Control = 3'b001;
+		      ALU_Control = 3'b001;
           RegDst = 3'b000;
-		  DataSrc = 4'b0000;
-		  RegWrite = 1'b0;                
+		      DataSrc = 4'b0000;
+		      RegWrite = 1'b0;                
           MemWrite = 1'b0;
           IRWrite = 1'b0;
           ABWrite = 1'b0;
@@ -247,9 +247,6 @@ reg[6:0] state;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
           state = FETCH_3;
-           
-         
-            
         end
         FETCH_3: begin
           //Alteradas
@@ -257,10 +254,10 @@ reg[6:0] state;
           IRWrite = 1'b1;
           //Inalteradas
           ALUSrcB = 2'b01;
-		  ALU_Control = 3'b001;
+		      ALU_Control = 3'b001;
           RegDst = 3'b000;
-		  DataSrc = 4'b0000;
-		  RegWrite = 1'b0;                
+		      DataSrc = 4'b0000;
+		      RegWrite = 1'b0;                
           MemWrite = 1'b0; /////////////////////////// REVER ISSO
           ABWrite = 1'b0;
           ALU_Control = 3'b000;
@@ -289,8 +286,8 @@ reg[6:0] state;
           IRWrite = 1'b0;
 		  //Inalteradas
           RegDst = 3'b000;
-		  DataSrc = 4'b0000;
-		  RegWrite = 1'b0;                
+		      DataSrc = 4'b0000;
+		      RegWrite = 1'b0;                
           PCWrite = 1'b0;
           MemWrite = 1'b0;
           ABWrite = 1'b0;
@@ -307,17 +304,17 @@ reg[6:0] state;
           L5Control = 1'b0;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
-		  state = DECODE_2;
+		      state = DECODE_2;
         end
         DECODE_2: begin
           //Alteradas
           ALUOutControl = 1'b0;
-		  //Inalteradas
+		      //Inalteradas
           ALU_Control = 3'b000;
           ALUSrcB = 2'b00;
           RegDst = 3'b000;
-		  DataSrc = 4'b0000;
-		  RegWrite = 1'b0;                
+		      DataSrc = 4'b0000;
+		      RegWrite = 1'b0;                
           PCWrite = 1'b0;
           MemWrite = 1'b0;
           IRWrite = 1'b0;
@@ -335,9 +332,61 @@ reg[6:0] state;
           L5Control = 1'b0;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
-          case(OPCODE)
+          case(Opcode)
             RINSTRUCTION: begin
-              
+              case(Funct)
+                ADD_F: begin
+                  state = ADD;
+                end
+                AND_F: begin
+                  state = AND;
+                end
+                DIV_F: begin
+                  state = DIV_1;
+                end
+                MULT_F: begin
+                  state = MULT_1;
+                end
+                JR_F: begin
+                  state = JR;
+                end
+                MFHI_F: begin
+                  state = MFHI;
+                end
+                MFLO_F: begin
+                  state = MFLO;
+                end
+                SLL_F: begin
+                  state = SHIFT_SHAMT;
+                end
+                SLLV_F: begin
+                  state = SHIFT_REG;
+                end
+                SLT_F: begin
+                  state = SLT;
+                end
+                SRA_F: begin
+                  state = SHIFT_SHAMT;
+                end
+                SRAV_F: begin
+                  state = SHIFT_REG;
+                end
+                SRL_F: begin
+                  state = SHIFT_SHAMT;
+                end
+                SUB_F: begin
+                  state = SUB;
+                end
+                BREAK_F: begin
+                  state = BREAK_1;
+                end
+                RTE_F: begin
+                  state = RTE;
+                end
+                XCHG_F: begin
+                  state = XCHG_1;
+                end
+              endcase
             end;
             ADDI_O: begin
               state = ADDI_ADDIU;
@@ -345,57 +394,54 @@ reg[6:0] state;
             ADDIU_O: begin
               state = ADDI_ADDIU;
             end
-            BEQ_O = 6'b000100;
-            BNE_O = 6'b000101;
-            BLE_O = 6'b000110;
-            BGT_O = 6'b000111;
-            BLM_O = 6'b000001;
-            LB_O = 6'b100000;
-            LH_O = 6'b100001;
-            LUI_O = 6'b001111;
-            LW_O = 6'b100011;
-            SB_O = 6'b101000;
-            SH_O = 6'b101001;
-            SLTI_O = 6'b001010;
-            SW_O = 6'b101011;
-            J_O = 6'b000010;
-            JAL_O = 6'b000011;
-          endcase
-			    state = OPERAR;
-        end
-        OPERAR: begin
-          case(OPCODE)
-            ADDI_O: begin
-              //Alteradas
-              ALU_Control = 3'b001;
-              ALUOutControl = 1'b1;
-              ALUSrcB = 2'b10;
-              ALUSrcA = 2'b01;
-			        //Inalteradas
-              RegDst = 3'b000;
-			        DataSrc = 4'b0000;
-			        RegWrite = 1'b0;                
-              PCWrite = 1'b0;
-              MemWrite = 1'b0;
-              IRWrite = 1'b0;
-              ABWrite = 1'b0;
-              MDRWrite = 1'b0;
-              HIWrite = 1'b0;
-              LOWrite = 1'b0;
-              SSControl = 2'b00;
-              ShiftControl = 3'b000;
-              IorD = 3'b000;
-              PCSource = 3'b000;
-              ExcpCtrl = 2'b00;
-              ShiftAmt = 1'b0;
-              L5Control = 1'b0;
-              EPCWrite = 1'b0;
-              ShiftSrc = 1'b0;
-			        state = OPERAR;
+            BEQ_O: begin
+              state = BEQ_BNE;
             end
-
-            
-          
+            BNE_O:begin
+              state = BEQ_BNE;
+            end
+            BLE_O: begin
+              state = BGT_BLE;
+            end
+            BGT_O: begin
+              state = BGT_BLE;
+            end
+            BLM_O: begin
+              state = BLM_1;
+            end
+            LB_O: begin
+              state = LW_LH_LB_1;
+            end
+            LH_O: begin
+              state = LW_LH_LB_1;
+            end
+            LUI_O: begin
+              state = LUI;
+            end
+            LW_O: begin
+              state = LW_LH_LB_1;
+            end
+            SB_O: begin
+              state = SW_SH_SB_1;
+            end
+            SH_O: begin
+              state = SW_SH_SB_1;
+            end
+            SLTI_O: begin
+              state = SLTI;
+            end
+            SW_O: begin
+              state = SW_SH_SB_1;
+            end
+            J_O: begin
+              state = J;
+            end
+            JAL_O: begin
+              state = JAL_1;
+            end
+            default: begin
+              state = OPCODEI;
+            end
           endcase
         end
         ADD: begin
