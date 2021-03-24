@@ -31,7 +31,7 @@ module Control(
   input wire EQ,
   input wire GT,
   input wire LT,
-  input wire overflow, // NÃO TEM NO DIAGRAMA
+  input wire Overflow, // NÃO TEM NO DIAGRAMA
 
 );
 
@@ -528,7 +528,11 @@ reg[6:0] state;
           ShiftSrc = 1'b0;
           state = ADD_SUB_AND;
         end
-        ADD_SUB_AND: begin //Aqui colocar os overflows!
+        ADD_SUB_AND: begin 
+          if (Overflow) begin
+            state = OVERFLOW_1;
+          end
+          else begin
           //Alteradas
 	        RegWrite = 1'b1;
           RegDst = 3'b001;           
@@ -554,7 +558,8 @@ reg[6:0] state;
           L5Control = 2'b00;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
-	        state = WAIT //MUDAR ISSO DPS
+	        state = CLOSE_WRITE;
+          end
         end
         MULT_1: begin
         end
