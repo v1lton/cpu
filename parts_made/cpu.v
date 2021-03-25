@@ -10,7 +10,7 @@ module cpu(
     wire IRWrite;
     wire RegWrite;
     wire ABWrite;
-    wire [2:0] ALU_Control
+    wire [2:0] ALU_Control;
     wire ALUOutControl;
     wire MDRWrite;
     wire HIWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
@@ -21,7 +21,7 @@ module cpu(
     wire [1:0] SSControl;
     wire [2:0] ShiftControl;
     wire [2:0] IorD;
-    wire [2:0] PCSource
+    wire [2:0] PCSource;
     wire [1:0] ExcpCtrl;
     wire ShiftAmt;
     wire L5Control;
@@ -72,7 +72,6 @@ module cpu(
     wire [31:0] Mult_Div_LO_out;
     wire [31:0] HI_out;
     wire [31:0] LO_out;
-    wire [31:0] SS_out;
     wire [31:0] Concatenated_28to32_out;
     wire [31:0] Sign_extend_1to32_out;
     wire [31:0] Sign_extend_8to32_out;
@@ -331,7 +330,7 @@ module cpu(
         Shift_amt_out
     );
 
-    pc_source PCSource(
+    pc_source pcSource(
         MDR_Out,
         ALU_out,
         Concatenated_28to32_out, 

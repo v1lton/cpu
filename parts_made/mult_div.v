@@ -1,14 +1,14 @@
 module mult_div(
 	input wire HDControl, // 0 multiplicacao 1 divisão
-	input wire[31:0] A,
-	input wire[31:0] B,
+	input wire [31:0] A,
+	input wire [31:0] B,
 	input wire clock,
 	input wire reset,
 
-	output wire[31:0] HI,
-	output wire[31:0] LO,
-	output wire DivBy0,
-	output wire Done,
+	output reg [31:0] HI,
+	output reg [31:0] LO,
+	output reg DivBy0,
+	output reg Done
 );
 
 	reg Initialize;
@@ -80,7 +80,7 @@ module mult_div(
 					signA = 1'b0;
 					signB = 1'b0;
 			end
-			else if(Initialize == 1'b1) begin
+			else if(HDControl == 1'b1 && Initialize == 1'b1) begin
 					Contador = 32'b0;
 					Initialize = 1'b0;//muda o valor de Initialize para nao resetar no clock seguinte
 					HI = 32'b0;
@@ -111,7 +111,7 @@ module mult_div(
 						LO = 32'b01111111111111111111111111111111;
 					end
 			end
-			else begin
+			else if (HDControl == 1'b1) begin
 				if(AuxA < AuxB) begin
 					//Se o resto for menor que o valor a ser dividido, para de dividir
 					//7   3| 2  1

@@ -7,11 +7,11 @@ parameter S1 = 1, S2 = 2, S3 = 3;
 always @(*) begin
 	case(L5Control)
 		S1:
-			LSControlOut <= MDR_out;//Load Word
+			L5Control_out <= MDR_out;//Load Word
 		S2:
-			LSControlOut <= {16'd0,MDR_out[15:0]};//Load Half
+			L5Control_out <= {16'd0,MDR_out[15:0]};//Load Half
 		S3:
-			LSControlOut <= {24'd0,MDR_out[7:0]};//Load Byte
+			L5Control_out <= {24'd0,MDR_out[7:0]};//Load Byte
 	endcase
 end
 

@@ -1,12 +1,12 @@
 module Control(
-  //input clock,
-  //input reset,
+  input clock,
+  input reset,
   output reg PCWrite, // ok
   output reg MemWrite, //ok
   output reg IRWrite, //ok
   output reg RegWrite, //ok
   output reg ABWrite, // PERGUNTAR PARA A WILTON
-  output reg [2:0] ALU_Control //OK
+  output reg [2:0] ALU_Control, //OK
   output reg ALUOutControl, //OK
   output reg MDRWrite, // PERGUNTAR PARA A WILTON (N TEM NO DIAGRAMA)
   output reg HIWrite, // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
@@ -17,7 +17,7 @@ module Control(
   output reg [1:0] SSControl, //OK
   output reg [2:0] ShiftControl, //OK
   output reg [2:0] IorD, //OK
-  output reg [2:0] PCSource //OK
+  output reg [2:0] PCSource, //OK
   output reg [1:0] ExcpCtrl, //OK
   output reg ShiftAmt, //OK
   output reg [1:0] L5Control, //OK
@@ -78,45 +78,45 @@ module Control(
   parameter OVERFLOW_WAIT_1 = 7'b0100100; // 36
   parameter OVERFLOW_WAIT_2 = 7'b0100101; // 37
   parameter OVERFLOW_2 = 7'b0100110; // 38
-  parameter OPCODEI = 7'b0100111 //39
-  parameter OPCODEI_WAIT_1 = 7'b0101000 //40
-  parameter OPCODEI_WAIT_2 = 7'b0101001 //41
-  parameter OPCODEI_2 = 7'b0101010 //42
-  parameter DIVBY0 = 7'b0101011 //43
-  parameter DIVBY0_WAIT_1 = 7'b0101100 //44
-  parameter DIVBY0_WAIT_2 = 7'b0101101 //45
-  parameter DIVBY0_2 = 7'b0101110 //46
-  parameter J = 7'b0101111 //47
-  parameter JAL_1 = 7'b0110000 //48
-  parameter JAL_2 = 7'b0110001 //49
-  parameter JAL_3 = 7'b0110010 //50
-  parameter SW_SH_SB_1 = 7'b0110011 //51
-  parameter SW_SH_SB_WAIT = 7'b0110100 //52
-  parameter SW_SH_SB_WAIT_2 = 7'b0110101 //53
-  parameter SW = 7'b0110110 //54
-  parameter SH = 7'b0110111 //55
-  parameter SB = 7'b0111000 //56
-  parameter LW_LH_LB_1 = 7'b0111001 //57
-  parameter LW_LH_LB_WAIT_1 = 7'b0111010 //58
-  parameter LW_LH_LB_WAIT_2 = 7'b0111011 //59
-  parameter LW = 7'b0111100 //60
-  parameter LH = 7'b0111101 //61
-  parameter LB = 7'b0111110 //62
-  parameter LUI = 7'b0111111 //63
-  parameter BLM_1 = 7'b1000000 //64
-  parameter BLM_2_WAIT = 7'b1000001 //65
-  parameter BLM_3_WAIT = 7'b1000010 //66
-  parameter BLM_4 = 7'b1000011 //67
-  parameter SLTI = 7'b1000100 //68
-  parameter BGT_BLE = 7'b1000101 //69
-  parameter BGT_BLE_2 = 7'b1000110 //70
-  parameter BEQ_BNE = 7'b1000111 //71
-  parameter BEQ_BNE_2 = 7'b1001000 //72
-  parameter ADDI_ADDIU = 7'b1001001 //73
-  parameter ADDI = 7'b1001010 //74
-  parameter ADDIU = 7'b1001011 //75
-  parameter CLOSE_WRITE = 7'b1001100 //76
-  parameter WAIT = 7'b1001101 //77
+  parameter OPCODEI = 7'b0100111; //39
+  parameter OPCODEI_WAIT_1 = 7'b0101000; //40
+  parameter OPCODEI_WAIT_2 = 7'b0101001; //41
+  parameter OPCODEI_2 = 7'b0101010; //42
+  parameter DIVBY0 = 7'b0101011; //43
+  parameter DIVBY0_WAIT_1 = 7'b0101100; //44
+  parameter DIVBY0_WAIT_2 = 7'b0101101; //45
+  parameter DIVBY0_2 = 7'b0101110; //46
+  parameter J = 7'b0101111; //47
+  parameter JAL_1 = 7'b0110000; //48
+  parameter JAL_2 = 7'b0110001; //49
+  parameter JAL_3 = 7'b0110010; //50
+  parameter SW_SH_SB_1 = 7'b0110011; //51
+  parameter SW_SH_SB_WAIT = 7'b0110100; //52
+  parameter SW_SH_SB_WAIT_2 = 7'b0110101; //53
+  parameter SW = 7'b0110110; //54
+  parameter SH = 7'b0110111; //55
+  parameter SB = 7'b0111000; //56
+  parameter LW_LH_LB_1 = 7'b0111001; //57
+  parameter LW_LH_LB_WAIT_1 = 7'b0111010; //58
+  parameter LW_LH_LB_WAIT_2 = 7'b0111011; //59
+  parameter LW = 7'b0111100; //60
+  parameter LH = 7'b0111101; //61
+  parameter LB = 7'b0111110; //62
+  parameter LUI = 7'b0111111; //63
+  parameter BLM_1 = 7'b1000000; //64
+  parameter BLM_2_WAIT = 7'b1000001; //65
+  parameter BLM_3_WAIT = 7'b1000010; //66
+  parameter BLM_4 = 7'b1000011; //67
+  parameter SLTI = 7'b1000100; //68
+  parameter BGT_BLE = 7'b1000101; //69
+  parameter BGT_BLE_2 = 7'b1000110; //70
+  parameter BEQ_BNE = 7'b1000111; //71
+  parameter BEQ_BNE_2 = 7'b1001000; //72
+  parameter ADDI_ADDIU = 7'b1001001; //73
+  parameter ADDI = 7'b1001010; //74
+  parameter ADDIU = 7'b1001011; //75
+  parameter CLOSE_WRITE = 7'b1001100; //76
+  parameter WAIT = 7'b1001101; //77
   
   // parameters do Opcode
   parameter RINSTRUCTION = 6'b000000;
@@ -390,7 +390,7 @@ reg[6:0] state;
                   state = XCHG_1;
                 end
               endcase
-            end;
+            end
             ADDI_O: begin
               state = ADDI_ADDIU;
             end
@@ -655,7 +655,7 @@ reg[6:0] state;
           ShiftSrc = 1'b0;
 	        state = CLOSE_WRITE;
         end
-        DIV1: begin
+        DIV_1: begin
           //Alteradas
           HDControl = 1'b1;
           HIWrite = 1'b0;
@@ -718,11 +718,11 @@ reg[6:0] state;
             if (Done == 0) begin
               state = DIV_WAIT;
             end else begin
-              state = DIV2;
+              state = DIV_2;
             end
           end
         end
-        DIV2: begin
+        DIV_2: begin
           //Alteradas
           HDControl = 1'b0;
           HIWrite = 1'b1;
@@ -833,7 +833,7 @@ reg[6:0] state;
           ExcpCtrl = 2'b00;
           L5Control = 2'b00;
           EPCWrite = 1'b0;
-	        case(funct)
+	        case(Funct)
             SLL_F: begin
               state = SLL;
             end
@@ -983,7 +983,7 @@ reg[6:0] state;
           ExcpCtrl = 2'b00;
           L5Control = 2'b00;
           EPCWrite = 1'b0;
-          case(funct)
+          case(Funct)
             SRAV_F: begin
               state = SRAV;
             end

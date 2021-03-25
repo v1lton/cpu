@@ -16,27 +16,27 @@ parameter S0 = 0, S1 = 1, S2 = 2, S3 = 3, S4 = 4, S5 = 5, S6 = 6, S7 = 7, S8 = 8
 always @(*) begin
 	case(DataSrc)
 		S0:
-			data_source_out <= ALU_out;
+			DataSrc_out <= ALU_out;
 		S1:
-			data_source_out <= L5Control_out;
+			DataSrc_out <= L5Control_out;
 		S2:
-			data_source_out <= HI_out;
+			DataSrc_out <= HI_out;
 		S3:
-			data_source_out <= LO_out;
+			DataSrc_out <= LO_out;
 		S4:
-			data_source_out <= Sign_extend_1to32_out;
+			DataSrc_out <= Sign_extend_1to32_out;
 		S5:
-			data_source_out <= Sign_extend_16to32_out;
+			DataSrc_out <= Sign_extend_16to32_out;
 		S6:
-			data_source_out <= Shif_left_16_out;
+			DataSrc_out <= Shif_left_16_out;
 		S7:
-			data_source_out <= 32'd227;
+			DataSrc_out <= 32'd227;
 		S8:
-			data_source_out <= Shift_reg_out;
+			DataSrc_out <= Shift_reg_out;
 		S9:
-			data_source_out <= ALUSrcA_out;
+			DataSrc_out <= ALUSrcA_out;
 		S10:
-			data_source_out <= ALUSrcB_out;
+			DataSrc_out <= ALUSrcB_out;
 	endcase
 end
 
