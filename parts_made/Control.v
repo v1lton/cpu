@@ -73,7 +73,7 @@ module Control(
   parameter RTE = 7'b0011111; // 31
   parameter XCHG_1 = 7'b0100000; // 32
   parameter XCHG_2 = 7'b0100001; // 33
-  parameter OPERAR = 7'b0100010; // 34
+  parameter BLM_5 = 7'b0100010; // 34
   parameter OVERFLOW_1 = 7'b0100011; // 35
   parameter OVERFLOW_WAIT_1 = 7'b0100100; // 36
   parameter OVERFLOW_WAIT_2 = 7'b0100101; // 37
@@ -2240,7 +2240,40 @@ reg[6:0] state;
           ALUSrcA = 2'b10;
           ALUSrcB = 2'b00;
           ALU_Control = 3'b111;
-          PCWrite = 1'b1;
+          //Inalteradas
+          PCWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = BLM_5;
+        end
+        BLM_5: begin
+          //Alteradas
+          ALUSrcA = 2'b10;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b111;
+          if (LT == 1) begin
+            PCWrite = 1'b1;
+          end else begin
+            PCWrite = 1'b0;
+          end
           //Inalteradas
           MemWrite = 1'b0; 
           IorD = 3'b000;
@@ -2273,6 +2306,7 @@ reg[6:0] state;
           RegDst = 3'b000;
           RegWrite = 1'b1;
           //Inalteradas
+          RegWrite = 1'b0;
           PCWrite = 1'b0;
           MemWrite = 1'b0; 
           IorD = 3'b000;
@@ -2323,7 +2357,48 @@ reg[6:0] state;
           state = BGT_BLE_2;
         end
         BGT_BLE_2: begin
-          //PENSAR MELHOR
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b111;
+          PCSource = 3'b001;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = CLOSE_WRITE;
+          case (Opcode)
+            BGT_O: begin
+              if (GT == 1) begin
+                PCWrite = 1'b1;
+              end else begin
+                PCWrite = 1'b0;
+              end
+            end
+            BLE_O: begin
+              if (GT == 0) begin
+                PCWrite = 1'b1;
+              end else begin
+                PCWrite = 1'b0;
+              end
+            end
+          endcase
         end
         BEQ_BNE: begin
           //Alteradas
@@ -2381,7 +2456,23 @@ reg[6:0] state;
           ABWrite = 1'b0;
           HIWrite = 1'b0;
           LOWrite = 1'b0;
-          state = BEQ_BNE_2;
+          state = CLOSE_WRITE;
+          case (Opcode)
+            BEQ_O: begin
+              if (EQ == 1) begin
+                PCWrite = 1'b1;
+              end else begin
+                PCWrite = 1'b0;
+              end
+            end
+            BNE_O: begin
+              if (EQ == 0) begin
+                PCWrite = 1'b1;
+              end else begin
+                PCWrite = 1'b0;
+              end
+            end
+          endcase
         end
         ADDI_ADDIU: begin
           //Alteradas
