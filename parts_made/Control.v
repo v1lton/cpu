@@ -20,18 +20,21 @@ module Control(
   output reg [2:0] PCSource //OK
   output reg [1:0] ExcpCtrl, //OK
   output reg ShiftAmt, //OK
-  output reg L5Control, //OK
+  output reg [1:0] L5Control, //OK
   output reg EPCWrite, //OK
   output reg [3:0] DataSrc, //OK
   output reg ShiftSrc, //OK
+  output reg HDControl, 
 
   //inputs
+  input wire Done,
   input wire [5:0] Opcode,
   input wire [5:0] Funct,
   input wire EQ,
   input wire GT,
   input wire LT,
-  input wire overflow, // NÃO TEM NO DIAGRAMA
+  input wire Overflow,
+  input wire DivBy0
 
 );
 
@@ -184,7 +187,7 @@ reg[6:0] state;
       PCSource = 3'b000;
       ExcpCtrl = 2'b00;
       ShiftAmt = 1'b0;
-      L5Control = 1'b0;
+      L5Control = 2'b00;
       EPCWrite = 1'b0;
       ShiftSrc = 1'b0;
 			state = FETCH_1;
@@ -214,7 +217,7 @@ reg[6:0] state;
           PCSource = 3'b000;
           ExcpCtrl = 2'b00;
           ShiftAmt = 1'b0;
-          L5Control = 1'b0;
+          L5Control = 2'b00;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
 			    state = FETCH_2;
@@ -243,7 +246,7 @@ reg[6:0] state;
           PCSource = 3'b000;
           ExcpCtrl = 2'b00;
           ShiftAmt = 1'b0;
-          L5Control = 1'b0;
+          L5Control = 2'b00;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
           state = FETCH_3;
@@ -272,7 +275,7 @@ reg[6:0] state;
           PCSource = 3'b000;
           ExcpCtrl = 2'b00;
           ShiftAmt = 1'b0;
-          L5Control = 1'b0;
+          L5Control = 2'b00;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
           state = DECODE_1;
@@ -284,13 +287,13 @@ reg[6:0] state;
           ALU_Control = 3'b001;
           ALUOutControl = 1'b1;
           IRWrite = 1'b0;
+          ABWrite = 1'b1;
 		  //Inalteradas
           RegDst = 3'b000;
 		      DataSrc = 4'b0000;
 		      RegWrite = 1'b0;                
           PCWrite = 1'b0;
           MemWrite = 1'b0;
-          ABWrite = 1'b0;
           MDRWrite = 1'b0;
           HIWrite = 1'b0;
           LOWrite = 1'b0;
@@ -301,7 +304,7 @@ reg[6:0] state;
           PCSource = 3'b000;
           ExcpCtrl = 2'b00;
           ShiftAmt = 1'b0;
-          L5Control = 1'b0;
+          L5Control = 2'b00;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
 		      state = DECODE_2;
@@ -329,7 +332,7 @@ reg[6:0] state;
           PCSource = 3'b000;
           ExcpCtrl = 2'b00;
           ShiftAmt = 1'b0;
-          L5Control = 1'b0;
+          L5Control = 2'b00;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
           case(Opcode)
@@ -445,146 +448,2066 @@ reg[6:0] state;
           endcase
         end
         ADD: begin
-            //Alterdas
-            
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALU_Control = 3'b001;
+          ALUOutControl = 1'b1;
+		      //Inalteradas
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+		      DataSrc = 4'b0000;
+		      RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+          state = ADD_SUB_AND;
         end
-        SUB: begin
+        SUB: begin      
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALU_Control = 3'b010;
+          ALUOutControl = 1'b1;
+		      //Inalteradas
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+		      DataSrc = 4'b0000;
+		      RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+          state = ADD_SUB_AND;
         end
         AND: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALU_Control = 3'b011;
+          ALUOutControl = 1'b1;
+		      //Inalteradas
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+		      DataSrc = 4'b0000;
+		      RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+          state = ADD_SUB_AND;
         end
-        ADD_SUB_AND: begin
+        ADD_SUB_AND: begin 
+          if (Overflow) begin
+            state = OVERFLOW_1;
+          end
+          else begin
+          //Alteradas
+	        RegWrite = 1'b1;
+          RegDst = 3'b001;           
+	        //Inalteradas
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+	        DataSrc = 4'b0000;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+	        state = CLOSE_WRITE;
+          end
         end
         MULT_1: begin
+          //Alteradas
+          HDControl = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+	        //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+	        state = MULT_WAIT;
         end
         MULT_WAIT: begin
+          //Alteradas
+	        //Inalteradas
+          HDControl = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+          if (Done == 0) begin
+            state = MULT_WAIT;
+          end else begin
+            state = MULT_2;
+          end
         end
         MULT_2: begin
+          //Alteradas
+          HDControl = 1'b0;
+          HIWrite = 1'b1;
+          LOWrite = 1'b1;
+	        //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+	        state = CLOSE_WRITE;
         end
         DIV1: begin
+          //Alteradas
+          HDControl = 1'b1;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+	        //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+	        state = DIV_WAIT;
         end
         DIV_WAIT: begin
+          if (DivBy0) begin
+            state = DIVBY0;
+          end
+          else begin
+          //Alteradas
+	        //Inalteradas
+          HDControl = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+            if (Done == 0) begin
+              state = DIV_WAIT;
+            end else begin
+              state = DIV2;
+            end
+          end
         end
         DIV2: begin
+          //Alteradas
+          HDControl = 1'b0;
+          HIWrite = 1'b1;
+          LOWrite = 1'b1;
+	        //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+	        state = CLOSE_WRITE;
         end
         MFHI: begin
+          //Alteradas
+          DataSrc = 4'b0010;
+          RegDst = 3'b001;
+          RegWrite = 1'b1;
+	        //Inalteradas
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+	        state = CLOSE_WRITE;
         end
         MFLO: begin
+          //Alteradas
+          DataSrc = 4'b0011;
+          RegDst = 3'b001;
+          RegWrite = 1'b1;
+	        //Inalteradas
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          ShiftControl = 3'b000;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          ShiftAmt = 1'b0;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          ShiftSrc = 1'b0;
+	        state = CLOSE_WRITE;
         end
         SHIFT_SHAMT: begin
+          //Alteradas
+          ShiftAmt = 1'b1;
+          ShiftControl = 3'b001;
+          ShiftSrc = 1'b1;
+	        //Inalteradas
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+	        case(funct)
+            SLL_F: begin
+              state = SLL;
+            end
+            SRA_F: begin
+              state = SRA;
+            end
+            SRL_F: begin
+              state = SRL;
+            end
+          endcase
         end
         SLL: begin
+          //Alteradas
+          ShiftControl = 3'b010;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = SLL_SRA_SRL;
         end
         SRA: begin
+          //Alteradas
+          ShiftControl = 3'b100;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = SLL_SRA_SRL;
         end
         SRL: begin
+          //Alteradas
+          ShiftControl = 3'b011;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = SLL_SRA_SRL;
         end
         SLL_SRA_SRL: begin
+          //Alteradas
+          DataSrc = 4'b1000;
+          RegDst = 3'b001;
+          RegWrite = 1'b1;
+	        //Inalteradas
+          ShiftControl = 3'b000;
+          ShiftAmt = 1'b0;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         SHIFT_REG: begin
+          //Alteradas
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b001;
+          ShiftSrc = 1'b0;
+	        //Inalteradas
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          case(funct)
+            SRAV_F: begin
+              state = SRAV;
+            end
+            SLLV_F: begin
+              state = SLLV;
+            end
+          endcase 
         end
         SRAV: begin
+          //Alteradas
+          ShiftControl = 3'b100;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = SRAV_SLLV;
         end
         SLLV: begin
+          //Alteradas
+          ShiftControl = 3'b010;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = SRAV_SLLV;
         end
         SRAV_SLLV: begin
+          //Alteradas
+          RegDst = 3'b001;
+          DataSrc = 4'b1000;
+          RegWrite = 1'b1; 
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         JR: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          PCSource = 3'b000;
+          PCWrite = 1'b1;
+          ALU_Control = 3'b000;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         SLT: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b111;
+          RegDst = 3'b001;
+          DataSrc = 4'b0100;
+          RegWrite = 1'b1;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         BREAK_1: begin
+          //Alteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = BREAK_2;
         end
         BREAK_2: begin
+          //Alteradas
+          PCSource = 3'b000;
+          PCWrite = 1'b1;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         RTE: begin
+          //Alteradas
+          PCSource = 3'b100;
+          PCWrite = 1'b1;
+	        //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;
+          RegDst = 3'b000;
+	        DataSrc = 4'b0000;
+	        RegWrite = 1'b0;                
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         XCHG_1: begin
+          //Alteradas
+	        DataSrc = 4'b1010;
+          RegDst = 3'b100;
+          RegWrite = 1'b1; 
+          //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = XCHG_2;
         end
         XCHG_2: begin
+          //Alteradas
+	        DataSrc = 4'b1001;
+          RegDst = 3'b000;
+          RegWrite = 1'b1; 
+          //Inalteradas
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         CLOSE_WRITE: begin
+          //Alteradas
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          ALU_Control = 3'b000;
+          ALUSrcB = 2'b00;               
+          PCWrite = 1'b0;
+          MemWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          SSControl = 2'b00;
+          IorD = 3'b000;
+          PCSource = 3'b000;
+          ExcpCtrl = 2'b00;
+          L5Control = 2'b00;
+          EPCWrite = 1'b0;
+          state = WAIT;
         end
         OVERFLOW_1: begin
+          //Alteradas
+          EPCWrite = 1'b1;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;      
+          PCWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          PCSource = 3'b000;
+          L5Control = 2'b00;
+          state = OVERFLOW_WAIT_1;
         end
         OVERFLOW_WAIT_1: begin
+          //Alteradas
+          EPCWrite = 1'b0;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;      
+          PCWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          PCSource = 3'b000;
+          L5Control = 2'b00;
+          state = OVERFLOW_WAIT_2;
         end
         OVERFLOW_WAIT_2: begin
+          //Alteradas
+          EPCWrite = 1'b0;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;      
+          PCWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          PCSource = 3'b000;
+          L5Control = 2'b00;
+          state = OVERFLOW_2;  
         end
         OVERFLOW_2: begin
+          //Alteradas
+          EPCWrite = 1'b0;
+          PCSource = 3'b101;
+          PCWrite = 1'b1;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = WAIT;
         end
         OPCODEI: begin
+          //Alteradas
+          EPCWrite = 1'b1;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b00;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;      
+          PCWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          PCSource = 3'b000;
+          L5Control = 2'b00;
+          state = OPCODEI_WAIT_1;
         end
         OPCODEI_WAIT_1: begin
+          //Alteradas
+          EPCWrite = 1'b0;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;      
+          PCWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          PCSource = 3'b000;
+          L5Control = 2'b00;
+          state = OPCODEI_WAIT_2;
         end
         OPCODEI_WAIT_2: begin
+          //Alteradas
+          EPCWrite = 1'b0;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;      
+          PCWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          PCSource = 3'b000;
+          L5Control = 2'b00;
+          state = OPCODEI_2; 
         end
         OPCODEI_2: begin
+          //Alteradas
+          EPCWrite = 1'b0;
+          PCSource = 3'b101;
+          PCWrite = 1'b1;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = WAIT;
         end
         DIVBY0: begin
+          //Alteradas
+          EPCWrite = 1'b1;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b10;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;      
+          PCWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          PCSource = 3'b000;
+          L5Control = 2'b00;
+          state = DIVBY0_WAIT_1;
         end
         DIVBY0_WAIT_1: begin
+          //Alteradas
+          EPCWrite = 1'b0;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;      
+          PCWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          PCSource = 3'b000;
+          L5Control = 2'b00;
+          state = DIVBY0_WAIT_2;
         end
         DIVBY0_WAIT_2: begin
+          //Alteradas
+          EPCWrite = 1'b0;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;      
+          PCWrite = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          PCSource = 3'b000;
+          L5Control = 2'b00;
+          state = DIVBY0_2;
         end
         DIVBY0_2: begin
+          //Alteradas
+          EPCWrite = 1'b0;
+          PCSource = 3'b101;
+          PCWrite = 1'b1;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = WAIT;
         end
         J: begin
+          //Alteradas
+          PCSource = 3'b010;
+          PCWrite = 1'b1;
+          //Inalteradas
+          EPCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ALU_Control = 3'b010;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          ALUOutControl = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = CLOSE_WRITE;
         end
         JAL_1: begin
+          //Alteradas
+          ALUSrcA = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b1; 
+          //Inalteradas
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          EPCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = JAL_2;
         end
         JAL_2: begin
+          //Alteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b011;
+          RegWrite = 1'b1; 
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b1; 
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          EPCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b01;
+          ExcpCtrl = 2'b01;
+          IorD = 3'b011;
+          MemWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = JAL_3;
         end
         JAL_3: begin
+          //Alteradas
+          PCSource = 3'b010;
+          PCWrite = 1'b1; 
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          EPCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ExcpCtrl = 2'b00;
+          IorD = 3'b011;
+          MemWrite = 1'b0; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = CLOSE_WRITE;
         end
         SW_SH_SB_1: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b10;
+          ALU_Control = 3'b001;
+          ALUOutControl = 1'b1;
+          IorD = 3'b010;
+          MemWrite = 1'b0;
+          //Inalteradas
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = SW_SH_SB_WAIT;
         end
         SW_SH_SB_WAIT: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b10;
+          ALU_Control = 3'b001;
+          ALUOutControl = 1'b0;
+          IorD = 3'b010;
+          MemWrite = 1'b0;
+          //Inalteradas
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = SW_SH_SB_WAIT_2;
         end
         SW_SH_SB_WAIT_2: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b10;
+          ALU_Control = 3'b001;
+          ALUOutControl = 1'b0;
+          IorD = 3'b010;
+          MemWrite = 1'b0;
+          MDRWrite = 1'b1;
+          //Inalteradas
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          case (Opcode)
+            SW_O: begin
+              state = SW;
+            end
+            SH_O: begin
+              state = SH;
+            end
+            SB_O: begin
+              state = SB;
+            end 
+          endcase
         end
         SW: begin
+          //Alteradas
+          SSControl = 2'b01;
+          MemWrite = 1'b1;
+          IorD = 3'b010;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          L5Control = 2'b00;
+          state = CLOSE_WRITE;
         end
         SH: begin
+          //Alteradas
+          SSControl = 2'b10;
+          MemWrite = 1'b1;
+          IorD = 3'b010;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          L5Control = 2'b00;
+          state = CLOSE_WRITE;
         end
         SB: begin
+          //Alteradas
+          SSControl = 2'b11;
+          MemWrite = 1'b1;
+          IorD = 3'b010;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          L5Control = 2'b00;
+          state = CLOSE_WRITE;
         end
         LW_LH_LB_1: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b10;
+          ALU_Control = 3'b001;
+          IorD = 3'b001;
+          MemWrite = 1'b0;
+          //Inalteradas
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = LW_LH_LB_WAIT_1;
         end
         LW_LH_LB_WAIT_1: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b10;
+          ALU_Control = 3'b001;
+          IorD = 3'b001;
+          MemWrite = 1'b0;
+          //Inalteradas
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          state = LW_LH_LB_WAIT_2;
         end
         LW_LH_LB_WAIT_2: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b10;
+          ALU_Control = 3'b001;
+          IorD = 3'b001;
+          MemWrite = 1'b0;
+          MDRWrite = 1'b1;
+          //Inalteradas
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0; 
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          SSControl = 2'b00;
+          L5Control = 2'b00;
+          case (Opcode)
+            LW_O: begin
+              state = LW;
+            end
+            LH_O: begin
+              state = LH;
+            end
+            LB_O: begin
+              state = LB;
+            end 
+          endcase
         end
         LW: begin
+          //Alteradas
+          DataSrc = 4'b0001;
+          RegDst = 3'b000;
+          RegWrite = 1'b1;
+          L5Control = 2'b01; 
+          IorD = 3'b001;
+          //Inalteradas
+          MemWrite = 1'b0;
+          SSControl = 2'b00;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         LH: begin
+          //Alteradas
+          DataSrc = 4'b0001;
+          RegDst = 3'b000;
+          RegWrite = 1'b1;
+          L5Control = 2'b10; 
+          IorD = 3'b001;
+          //Inalteradas
+          MemWrite = 1'b0;
+          SSControl = 2'b00;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         LB: begin
+          //Alteradas
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          L5Control = 2'b00; 
+          IorD = 3'b000;
+          MemWrite = 1'b0;
+          SSControl = 2'b00;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         LUI: begin
+          //Alteradas
+          DataSrc = 4'b0110;
+          RegDst = 3'b000;
+          RegWrite = 1'b1;
+          //Inalteradas
+          L5Control = 2'b00; 
+          IorD = 3'b000;
+          MemWrite = 1'b0;
+          SSControl = 2'b00;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         BLM_1: begin
+          //Alteradas
+          MemWrite = 1'b0; 
+          IorD = 3'b100;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = BLM_2_WAIT;
         end
         BLM_2_WAIT: begin
+          //Alteradas
+          MemWrite = 1'b0; 
+          IorD = 3'b100;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          MDRWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = BLM_3_WAIT;
         end
         BLM_3_WAIT: begin
+          //Alteradas
+          MemWrite = 1'b0; 
+          IorD = 3'b100;
+          MDRWrite = 1'b1;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          PCWrite = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = BLM_4;
         end
         BLM_4: begin
+          //Alteradas
+          ALUSrcA = 2'b10;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b111;
+          PCWrite = 1'b1;
+          //Inalteradas
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         SLTI: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b10;
+          ALU_Control = 3'b111;
+          DataSrc = 4'b0100;
+          RegDst = 3'b000;
+          RegWrite = 1'b1;
+          //Inalteradas
+          PCWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          PCSource = 3'b000;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         BGT_BLE: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b111;
+          PCSource = 3'b001;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          PCWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = BGT_BLE_2;
         end
         BGT_BLE_2: begin
+          //PENSAR MELHOR
         end
         BEQ_BNE: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b111;
+          PCSource = 3'b001;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          PCWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = BEQ_BNE_2;
         end
         BEQ_BNE_2: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b111;
+          PCSource = 3'b001;
+          //Inalteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          PCWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = BEQ_BNE_2;
         end
         ADDI_ADDIU: begin
+          //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b10;
+          ALU_Control = 3'b001;
+          ALUOutControl = 1'b1;
+          //Inalteradas
+          PCSource = 3'b000;
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b0;
+          PCWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          case (Opcode)
+            ADDI_O: begin
+              state = ADDI;
+            end
+            ADDIU_O: begin
+              state = ADDIU;
+            end
+          endcase
+        end
+        ADDI: begin
+          //Alteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b1;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          PCSource = 3'b000;
+          DataSrc = 4'b0000;
+          PCWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         ADDIU: begin
+          //Alteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b1;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          PCSource = 3'b000;
+          DataSrc = 4'b0000;
+          PCWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = CLOSE_WRITE;
         end
         WAIT: begin
+          //Alteradas
+          DataSrc = 4'b0000;
+          RegDst = 3'b000;
+          RegWrite = 1'b1;
+          //Inalteradas
+          ALUSrcA = 2'b00;
+          ALUSrcB = 2'b00;
+          ALU_Control = 3'b000;
+          PCSource = 3'b000;
+          DataSrc = 4'b0000;
+          PCWrite = 1'b0;
+          MemWrite = 1'b0; 
+          IorD = 3'b000;
+          MDRWrite = 1'b0;
+          L5Control = 2'b00;
+          SSControl = 2'b00;
+          ALUOutControl = 1'b0;
+          ALUSrcA = 2'b00;
+          EPCWrite = 1'b0;
+          ExcpCtrl = 2'b00; 
+          ShiftAmt = 1'b0;
+          ShiftControl = 3'b000;
+          ShiftSrc = 1'b0;     
+          IRWrite = 1'b0;
+          ABWrite = 1'b0;
+          HIWrite = 1'b0;
+          LOWrite = 1'b0;
+          state = FETCH_1;
         end
       endcase
     end
