@@ -90,6 +90,45 @@ module cpu(
   wire DivBy0; // controller /////////////////////////////////////////////
   wire Done;
 
+  // controler
+  Control Control(
+    clock,
+    reset,
+    PCWrite,
+    MemWrite,
+    IRWrite,
+    RegWrite,
+    ABWrite,
+    ALU_Control,
+    ALUOutControl,
+    MDRWrite,
+    HIWrite,
+    LOWrite,
+    ALUSrcA,
+    ALUSrcB,
+    RegDst,
+    SSControl,
+    ShiftControl,
+    IorD,
+    PCSource,
+    ExcpCtrl,
+    ShiftAmt,
+    L5Control,
+    EPCWrite,
+    DataSrc,
+    ShiftSrc,
+    HDControl,
+
+    Done,
+    OPCODE,
+    IMMEDIATE[5:0],
+    EQ,
+    GT,
+    LT,
+    Overflow,
+    DivBy0
+  );
+
   // Memory
 
   Memoria Memory_(
