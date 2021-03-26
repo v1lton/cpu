@@ -24,7 +24,8 @@ module Control(
   output reg EPCWrite, //OK
   output reg [3:0] DataSrc, //OK
   output reg ShiftSrc, //OK
-  output reg HDControl, 
+  output reg HDControl,
+  output reg [6:0] state, 
 
   //inputs
   input wire Done,
@@ -157,8 +158,6 @@ module Control(
   parameter RTE_F = 6'b010011;
   parameter XCHG_F = 6'b000101;
 
-reg[6:0] state;
-
   initial begin
     state = FETCH_1;
   end
@@ -205,7 +204,6 @@ reg[6:0] state;
           MemWrite = 1'b0;
           IRWrite = 1'b0;
           ABWrite = 1'b0;
-          ALU_Control = 3'b000;
           ALUOutControl = 1'b0;
           MDRWrite = 1'b0;
           HIWrite = 1'b0;
@@ -234,7 +232,6 @@ reg[6:0] state;
           MemWrite = 1'b0;
           IRWrite = 1'b0;
           ABWrite = 1'b0;
-          ALU_Control = 3'b000;
           ALUOutControl = 1'b0;
           MDRWrite = 1'b0;
           HIWrite = 1'b0;
@@ -263,7 +260,6 @@ reg[6:0] state;
 		      RegWrite = 1'b0;                
           MemWrite = 1'b0; /////////////////////////// REVER ISSO
           ABWrite = 1'b0;
-          ALU_Control = 3'b000;
           ALUOutControl = 1'b0;
           MDRWrite = 1'b0;
           HIWrite = 1'b0;
@@ -279,7 +275,6 @@ reg[6:0] state;
           EPCWrite = 1'b0;
           ShiftSrc = 1'b0;
           state = DECODE_1;
-
         end
         DECODE_1: begin
           //Alteradas
@@ -2491,7 +2486,6 @@ reg[6:0] state;
           MDRWrite = 1'b0;
           L5Control = 2'b00;
           SSControl = 2'b00;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2558,7 +2552,6 @@ reg[6:0] state;
           L5Control = 2'b00;
           SSControl = 2'b00;
           ALUOutControl = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2588,7 +2581,6 @@ reg[6:0] state;
           L5Control = 2'b00;
           SSControl = 2'b00;
           ALUOutControl = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;

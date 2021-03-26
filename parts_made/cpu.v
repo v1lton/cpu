@@ -1,6 +1,9 @@
 module cpu(
   input wire clock,
-  input wire reset
+  input wire reset,
+  output wire [31:0] PC_out,
+  output wire [6:0] state,
+  output wire [31:0] ALU_out
 );
 
   // Control wires
@@ -54,7 +57,7 @@ module cpu(
   // Data wires 32 bits
 
   wire [31:0] PCSource_out;
-  wire [31:0] PC_out;
+  //output wire [31:0] PC_out;
   wire [31:0] I_or_D_Out;
   wire [31:0] SS_out;
   wire [31:0] Memory_out;
@@ -64,7 +67,7 @@ module cpu(
   wire [31:0] Reg_B_out;
   wire [31:0] ALUSrcA_out;
   wire [31:0] ALUSrcB_out;
-  wire [31:0] ALU_out;
+  //wire [31:0] ALU_out;
   wire [31:0] ALUOut_out;
   wire [31:0] EPC_out;
   wire [31:0] MDR_out;
@@ -118,6 +121,7 @@ module cpu(
     DataSrc,
     ShiftSrc,
     HDControl,
+    state,
 
     Done,
     OPCODE,
