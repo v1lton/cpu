@@ -10,7 +10,7 @@ module cpu(
   wire IRWrite;
   wire RegWrite;
   wire ABWrite;
-  wire [2:0] ALU_Control
+  wire [2:0] ALU_Control;
   wire ALUOutControl;
   wire MDRWrite;
   wire HIWrite; // Se HIWrite e LOWrite tiverem sempre o mesmo valor, dá para criar um controle para os dois
@@ -21,10 +21,10 @@ module cpu(
   wire [1:0] SSControl;
   wire [2:0] ShiftControl;
   wire [2:0] IorD;
-  wire [2:0] PCSource
+  wire [2:0] PCSource;
   wire [1:0] ExcpCtrl;
   wire ShiftAmt;
-  wire L5Control;
+  wire [1:0] L5Control;
   wire EPCWrite;
   wire [3:0] DataSrc;
   wire ShiftSrc;
@@ -58,7 +58,7 @@ module cpu(
   wire [31:0] I_or_D_Out;
   wire [31:0] SS_out;
   wire [31:0] Memory_out;
-  wire [31:0] RegDst_out;
+  wire [4:0] RegDst_out;
   wire [31:0] DataSrc_out;
   wire [31:0] Reg_A_out;
   wire [31:0] Reg_B_out;
@@ -72,7 +72,6 @@ module cpu(
   wire [31:0] Mult_Div_LO_out;
   wire [31:0] HI_out;
   wire [31:0] LO_out;
-  wire [31:0] SS_out;
   wire [31:0] Concatenated_28to32_out;
   wire [31:0] Sign_extend_1to32_out;
   wire [31:0] Sign_extend_8to32_out;
@@ -282,7 +281,7 @@ module cpu(
 
   alu_src_a Alu_Src_A(
     ALUSrcA,
-    PC_Out,
+    PC_out,
     A_out,
     MDR_out,
     ALUSrcA_out
@@ -304,7 +303,7 @@ module cpu(
     LO_out,
     Sign_extend_1to32_out, 
     Sign_extend_16to32_out,
-    Shif_left_16_out, 
+    Shift_left_16_out, 
     Shift_reg_out, 
     ALUSrcA_out,
     ALUSrcB_out,
@@ -333,8 +332,8 @@ module cpu(
     Shift_amt_out
   );
 
-  pc_source PCSource(
-    MDR_Out,
+  pc_source pCSource(
+    MDR_out,
     ALU_out,
     Concatenated_28to32_out, 
     ALUOut_out,
@@ -345,9 +344,10 @@ module cpu(
   );
 
   shift_src shift_src(
-    ALUSrcA_out,
-    ALUSrcB_out,
-    ShiftSrc
+    A_out,
+    B_out,
+    ShiftSrc,
+    Shift_src_out
   );
 
   reg_dst Reg_Dst(
@@ -367,7 +367,7 @@ module cpu(
     Mult_Div_HI_out,
     Mult_Div_LO_out,
     DivBy0,
-    Done,
+    Done
   );
 
 endmodule
