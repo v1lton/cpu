@@ -218,7 +218,7 @@ module cpu(
   );
 
   shift_left_mult_4 Shift_left_mult_4_(
-    PC_out,
+    Sign_extend_16to32_out,
     Shift_left_mult_4_out
   );
 
@@ -333,14 +333,14 @@ module cpu(
   alu_src_b Alu_Src_B(
     ALUSrcB,
     B_out,
-    Shift_left_16_out,
+    Sign_extend_16to32_out,
     Shift_left_mult_4_out,
     ALUSrcB_out
   );
 
   data_source DataSource( //Tem que mudar alguma coisa
     DataSrc,
-    ALU_out, 
+    ALUOut_out, 
     L5Control_out,
     HI_out,
     LO_out,
@@ -348,8 +348,8 @@ module cpu(
     Sign_extend_16to32_out,
     Shift_left_16_out, 
     Shift_reg_out, 
-    ALUSrcA_out,
-    ALUSrcB_out,
+    A_out,
+    B_out,
     DataSrc_out
   );
 
@@ -381,7 +381,7 @@ module cpu(
     Concatenated_28to32_out, 
     ALUOut_out,
     EPC_out,
-    Excp_out,
+    Sign_extend_8to32_out,
     PCSource,
     PCSource_out
   );

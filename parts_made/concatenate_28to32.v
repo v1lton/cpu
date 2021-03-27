@@ -4,6 +4,6 @@ module concatenate_28to32(
     output  wire   [31:0]   Concatenated_32
 );
 
-    assign Concatenated_26 = {PC[31:28], Shift_left_out};
+    assign Concatenated_32 = {PC[31:28], Shift_left_out};
 
 endmodule

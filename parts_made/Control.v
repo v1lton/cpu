@@ -685,8 +685,8 @@ module Control(
           end
           else begin
           //Alteradas
+          HDControl = 1'b1;
 	        //Inalteradas
-          HDControl = 1'b0;
           HIWrite = 1'b0;
           LOWrite = 1'b0;
           DataSrc = 4'b0000;
@@ -1132,6 +1132,8 @@ module Control(
           ALUSrcA = 2'b00;
           ALUSrcB = 2'b01;
           ALU_Control = 3'b010;
+          PCSource = 3'b000;                
+          PCWrite = 1'b1;
 	        //Inalteradas
           ShiftAmt = 1'b0;
           ShiftControl = 3'b000;
@@ -1139,8 +1141,7 @@ module Control(
           ALUOutControl = 1'b0;
           RegDst = 3'b000;
 	        DataSrc = 4'b0000;
-	        RegWrite = 1'b0;                
-          PCWrite = 1'b0;
+	        RegWrite = 1'b0;
           MemWrite = 1'b0;
           IRWrite = 1'b0;
           ABWrite = 1'b0;
@@ -1149,11 +1150,10 @@ module Control(
           LOWrite = 1'b0;
           SSControl = 2'b00;
           IorD = 3'b000;
-          PCSource = 3'b000;
           ExcpCtrl = 2'b00;
           L5Control = 2'b00;
           EPCWrite = 1'b0;
-          state = BREAK_2;
+          state = CLOSE_WRITE;
         end
         BREAK_2: begin
           //Alteradas
@@ -1442,7 +1442,7 @@ module Control(
           ALUSrcA = 2'b00;
           ALUSrcB = 2'b01;
           ALU_Control = 3'b010;
-          ExcpCtrl = 2'b01;
+          ExcpCtrl = 2'b00;
           IorD = 3'b011;
           MemWrite = 1'b0;
           DataSrc = 4'b0000;
@@ -1470,7 +1470,7 @@ module Control(
           ALUSrcA = 2'b00;
           ALUSrcB = 2'b01;
           ALU_Control = 3'b010;
-          ExcpCtrl = 2'b01;
+          ExcpCtrl = 2'b00;
           IorD = 3'b011;
           MemWrite = 1'b0;
           DataSrc = 4'b0000;
@@ -1500,7 +1500,7 @@ module Control(
           ALUSrcA = 2'b00;
           ALUSrcB = 2'b01;
           ALU_Control = 3'b010;
-          ExcpCtrl = 2'b01;
+          ExcpCtrl = 2'b00;
           IorD = 3'b011;
           MemWrite = 1'b0;
           DataSrc = 4'b0000;
@@ -1554,7 +1554,7 @@ module Control(
           ALUSrcA = 2'b00;
           ALUSrcB = 2'b01;
           ALU_Control = 3'b010;
-          ExcpCtrl = 2'b01;
+          ExcpCtrl = 2'b10;
           IorD = 3'b011;
           MemWrite = 1'b0;
           DataSrc = 4'b0000;
@@ -1582,7 +1582,7 @@ module Control(
           ALUSrcA = 2'b00;
           ALUSrcB = 2'b01;
           ALU_Control = 3'b010;
-          ExcpCtrl = 2'b01;
+          ExcpCtrl = 2'b10;
           IorD = 3'b011;
           MemWrite = 1'b0;
           DataSrc = 4'b0000;
@@ -1612,7 +1612,7 @@ module Control(
           ALUSrcA = 2'b00;
           ALUSrcB = 2'b01;
           ALU_Control = 3'b010;
-          ExcpCtrl = 2'b01;
+          ExcpCtrl = 2'b10;
           IorD = 3'b011;
           MemWrite = 1'b0;
           DataSrc = 4'b0000;
@@ -1759,8 +1759,7 @@ module Control(
           PCWrite = 1'b0;
           DataSrc = 4'b0000;
           RegDst = 3'b000;
-          RegWrite = 1'b0; 
-          ALUSrcA = 2'b00;
+          RegWrite = 1'b0;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -1789,7 +1788,6 @@ module Control(
           DataSrc = 4'b0000;
           RegDst = 3'b000;
           RegWrite = 1'b0; 
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -1819,7 +1817,6 @@ module Control(
           DataSrc = 4'b0000;
           RegDst = 3'b000;
           RegWrite = 1'b0; 
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -1858,7 +1855,6 @@ module Control(
           DataSrc = 4'b0000;
           RegDst = 3'b000;
           RegWrite = 1'b0; 
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -1886,8 +1882,7 @@ module Control(
           PCWrite = 1'b0;
           DataSrc = 4'b0000;
           RegDst = 3'b000;
-          RegWrite = 1'b0; 
-          ALUSrcA = 2'b00;
+          RegWrite = 1'b0;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -1915,8 +1910,7 @@ module Control(
           PCWrite = 1'b0;
           DataSrc = 4'b0000;
           RegDst = 3'b000;
-          RegWrite = 1'b0; 
-          ALUSrcA = 2'b00;
+          RegWrite = 1'b0;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -1943,8 +1937,7 @@ module Control(
           PCWrite = 1'b0;
           DataSrc = 4'b0000;
           RegDst = 3'b000;
-          RegWrite = 1'b0; 
-          ALUSrcA = 2'b00;
+          RegWrite = 1'b0;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -1972,8 +1965,7 @@ module Control(
           PCWrite = 1'b0;
           DataSrc = 4'b0000;
           RegDst = 3'b000;
-          RegWrite = 1'b0; 
-          ALUSrcA = 2'b00;
+          RegWrite = 1'b0;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2002,8 +1994,7 @@ module Control(
           PCWrite = 1'b0;
           DataSrc = 4'b0000;
           RegDst = 3'b000;
-          RegWrite = 1'b0; 
-          ALUSrcA = 2'b00;
+          RegWrite = 1'b0;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2043,7 +2034,6 @@ module Control(
           ALUOutControl = 1'b0;
           PCSource = 3'b000;
           PCWrite = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2072,7 +2062,6 @@ module Control(
           ALUOutControl = 1'b0;
           PCSource = 3'b000;
           PCWrite = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2087,12 +2076,12 @@ module Control(
         end
         LB: begin
           //Alteradas
-          //Inalteradas
-          DataSrc = 4'b0000;
+          DataSrc = 4'b0001;
           RegDst = 3'b000;
-          RegWrite = 1'b0;
-          L5Control = 2'b00; 
-          IorD = 3'b000;
+          RegWrite = 1'b1;
+          L5Control = 2'b11; 
+          IorD = 3'b001;
+          //Inalteradas
           MemWrite = 1'b0;
           SSControl = 2'b00;
           ALUSrcA = 2'b00;
@@ -2101,7 +2090,6 @@ module Control(
           ALUOutControl = 1'b0;
           PCSource = 3'b000;
           PCWrite = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2130,7 +2118,6 @@ module Control(
           ALUOutControl = 1'b0;
           PCSource = 3'b000;
           PCWrite = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2159,7 +2146,6 @@ module Control(
           ALUOutControl = 1'b0;
           PCSource = 3'b000;
           PCWrite = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2188,7 +2174,6 @@ module Control(
           ALUOutControl = 1'b0;
           PCSource = 3'b000;
           PCWrite = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2218,7 +2203,6 @@ module Control(
           ALUOutControl = 1'b0;
           PCSource = 3'b000;
           PCWrite = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2235,8 +2219,8 @@ module Control(
           ALUSrcA = 2'b10;
           ALUSrcB = 2'b00;
           ALU_Control = 3'b111;
+          PCSource = 3'b001;
           //Inalteradas
-          PCWrite = 1'b0;
           MemWrite = 1'b0; 
           IorD = 3'b000;
           MDRWrite = 1'b0;
@@ -2246,8 +2230,6 @@ module Control(
           L5Control = 2'b00;
           SSControl = 2'b00;
           ALUOutControl = 1'b0;
-          PCSource = 3'b000;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2263,7 +2245,8 @@ module Control(
           //Alteradas
           ALUSrcA = 2'b10;
           ALUSrcB = 2'b00;
-          ALU_Control = 3'b111;
+          ALU_Control = 3'b111;       
+          PCSource = 3'b001;
           if (LT == 1) begin
             PCWrite = 1'b1;
           end else begin
@@ -2279,8 +2262,6 @@ module Control(
           L5Control = 2'b00;
           SSControl = 2'b00;
           ALUOutControl = 1'b0;
-          PCSource = 3'b000;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2301,7 +2282,6 @@ module Control(
           RegDst = 3'b000;
           RegWrite = 1'b1;
           //Inalteradas
-          RegWrite = 1'b0;
           PCWrite = 1'b0;
           MemWrite = 1'b0; 
           IorD = 3'b000;
@@ -2310,7 +2290,6 @@ module Control(
           SSControl = 2'b00;
           ALUOutControl = 1'b0;
           PCSource = 3'b000;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2339,7 +2318,6 @@ module Control(
           L5Control = 2'b00;
           SSControl = 2'b00;
           ALUOutControl = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2367,7 +2345,6 @@ module Control(
           L5Control = 2'b00;
           SSControl = 2'b00;
           ALUOutControl = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2402,6 +2379,7 @@ module Control(
           ALU_Control = 3'b111;
           PCSource = 3'b001;
           //Inalteradas
+          ALUOutControl = 1'b0;
           DataSrc = 4'b0000;
           RegDst = 3'b000;
           RegWrite = 1'b0;
@@ -2411,8 +2389,6 @@ module Control(
           MDRWrite = 1'b0;
           L5Control = 2'b00;
           SSControl = 2'b00;
-          ALUOutControl = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2434,14 +2410,12 @@ module Control(
           DataSrc = 4'b0000;
           RegDst = 3'b000;
           RegWrite = 1'b0;
-          PCWrite = 1'b0;
           MemWrite = 1'b0; 
           IorD = 3'b000;
           MDRWrite = 1'b0;
           L5Control = 2'b00;
           SSControl = 2'b00;
           ALUOutControl = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2506,12 +2480,12 @@ module Control(
         end
         ADDI: begin
           //Alteradas
+          ALUSrcA = 2'b01;
+          ALUSrcB = 2'b10;
           DataSrc = 4'b0000;
           RegDst = 3'b000;
           RegWrite = 1'b1;
           //Inalteradas
-          ALUSrcA = 2'b00;
-          ALUSrcB = 2'b00;
           ALU_Control = 3'b000;
           PCSource = 3'b000;
           DataSrc = 4'b0000;
@@ -2522,7 +2496,6 @@ module Control(
           L5Control = 2'b00;
           SSControl = 2'b00;
           ALUOutControl = 1'b0;
-          ALUSrcA = 2'b00;
           EPCWrite = 1'b0;
           ExcpCtrl = 2'b00; 
           ShiftAmt = 1'b0;
@@ -2567,7 +2540,7 @@ module Control(
           //Alteradas
           DataSrc = 4'b0000;
           RegDst = 3'b000;
-          RegWrite = 1'b1;
+          RegWrite = 1'b0;
           //Inalteradas
           ALUSrcA = 2'b00;
           ALUSrcB = 2'b00;
