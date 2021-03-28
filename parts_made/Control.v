@@ -527,7 +527,7 @@ module Control(
           state = ADD_SUB_AND;
         end
         ADD_SUB_AND: begin 
-          if (Overflow) begin
+          if (Overflow && Funct != AND_F) begin
             state = OVERFLOW_1;
           end
           else begin
