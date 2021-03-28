@@ -52,10 +52,8 @@ module Control(
   parameter ADD_SUB_AND = 7'b0001001; // 9
   parameter MULT_1 = 7'b0001010; // 10
   parameter MULT_WAIT = 7'b0001011; // 11
-  parameter MULT_2 = 7'b0001100; // 12
   parameter DIV_1 = 7'b0001101; // 13
   parameter DIV_WAIT = 7'b0001110; // 14
-  parameter DIV_2 = 7'b0001111; // 15
   parameter MFHI = 7'b0010000; // 16
   parameter MFLO = 7'b0010001; // 17
   parameter SHIFT_SHAMT = 7'b0010010; // 18
@@ -618,37 +616,11 @@ module Control(
           if (Done == 0) begin
             state = MULT_WAIT;
           end else begin
-            state = MULT_2;
+            HDControl = 1'b0;
+            HIWrite = 1'b1;
+            LOWrite = 1'b1;
+	          state = CLOSE_WRITE;
           end
-        end
-        MULT_2: begin
-          //Alteradas
-          HDControl = 1'b0;
-          HIWrite = 1'b1;
-          LOWrite = 1'b1;
-	        //Inalteradas
-          DataSrc = 4'b0000;
-          RegDst = 3'b000;
-          RegWrite = 1'b0;
-          ALUOutControl = 1'b0;
-          ALU_Control = 3'b000;
-          ALUSrcB = 2'b00;               
-          PCWrite = 1'b0;
-          MemWrite = 1'b0;
-          IRWrite = 1'b0;
-          ABWrite = 1'b0;
-          MDRWrite = 1'b0;
-          ALUSrcA = 2'b00;
-          SSControl = 2'b00;
-          ShiftControl = 3'b000;
-          IorD = 3'b000;
-          PCSource = 3'b000;
-          ExcpCtrl = 2'b00;
-          ShiftAmt = 1'b0;
-          L5Control = 2'b00;
-          EPCWrite = 1'b0;
-          ShiftSrc = 1'b0;
-	        state = CLOSE_WRITE;
         end
         DIV_1: begin
           //Alteradas
@@ -713,38 +685,12 @@ module Control(
             if (Done == 0) begin
               state = DIV_WAIT;
             end else begin
-              state = DIV_2;
+              HDControl = 1'b0;
+              HIWrite = 1'b1;
+              LOWrite = 1'b1;
+	            state = CLOSE_WRITE;
             end
           end
-        end
-        DIV_2: begin
-          //Alteradas
-          HDControl = 1'b0;
-          HIWrite = 1'b1;
-          LOWrite = 1'b1;
-	        //Inalteradas
-          DataSrc = 4'b0000;
-          RegDst = 3'b000;
-          RegWrite = 1'b0;
-          ALUOutControl = 1'b0;
-          ALU_Control = 3'b000;
-          ALUSrcB = 2'b00;               
-          PCWrite = 1'b0;
-          MemWrite = 1'b0;
-          IRWrite = 1'b0;
-          ABWrite = 1'b0;
-          MDRWrite = 1'b0;
-          ALUSrcA = 2'b00;
-          SSControl = 2'b00;
-          ShiftControl = 3'b000;
-          IorD = 3'b000;
-          PCSource = 3'b000;
-          ExcpCtrl = 2'b00;
-          ShiftAmt = 1'b0;
-          L5Control = 2'b00;
-          EPCWrite = 1'b0;
-          ShiftSrc = 1'b0;
-	        state = CLOSE_WRITE;
         end
         MFHI: begin
           //Alteradas

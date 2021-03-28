@@ -28,4 +28,24 @@ transcript*
 sc_dpiheader.h
 vsim.dbg
 
+/db
+/incremental_db
+/simulation
+/work
+
+*.mpf
+*.qpf
+*.rpt
+*.summary
+*.done
+*.map
+*.pin
+*.qsf
+*.done
+*.smsg
+*.map
+*.qws
+*.sof
+*.mif
+
 # End of https://www.toptal.com/developers/gitignore/api/modelsim
